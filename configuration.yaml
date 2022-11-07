@@ -1,1 +1,2 @@
 sensor: !include sensors.yaml
+automation: !include automations.yaml
