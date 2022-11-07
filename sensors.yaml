@@ -1,0 +1,82 @@
+##### Nordpool cheap hours ########################
+- platform: template
+  sensors:
+    nordpool_diy_sensor:
+      friendly_name: "Nordpool diy sensor"
+      unit_of_measurement: 'ÖRE/kWh'
+      value_template: >
+        {{average((state_attr('sensor.nordpool_kwh_se3_sek_3_095_025', 'today') | sort(reverse=true))[24-int(states('input_select.varmepump_avstangd'))-1],
+                  (state_attr('sensor.nordpool_kwh_se3_sek_3_095_025', 'today') | sort(reverse=true))[24-int(states('input_select.varmepump_avstangd'))]) | 
+          round(3) }}
+      attribute_templates:
+        below_config_value_now: >
+          {% if state_attr('sensor.nordpool_kwh_se3_sek_3_095_025', 'current_price') <= 
+                average((state_attr('sensor.nordpool_kwh_se3_sek_3_095_025', 'today') | sort(reverse=true))[24-int(states('input_select.varmepump_avstangd'))-1],
+                        (state_attr('sensor.nordpool_kwh_se3_sek_3_095_025', 'today') | sort(reverse=true))[24-int(states('input_select.varmepump_avstangd'))]) | 
+                round(3) %}
+          True
+          {% else %}
+          False
+          {% endif %}
+        current_price: >
+          {{ state_attr('sensor.nordpool_kwh_se3_sek_3_095_025', 'current_price') }}
+        today: >
+          {{ state_attr('sensor.nordpool_kwh_se3_sek_3_095_025', 'today') }}
+        tomorrow_valid: >
+          {{ state_attr('sensor.nordpool_kwh_se3_sek_3_095_025', 'tomorrow_valid') }}
+        tomorrow: >
+          {% if state_attr('sensor.nordpool_kwh_se3_sek_3_095_025', 'tomorrow_valid') %}
+          {{average((state_attr('sensor.nordpool_kwh_se3_sek_3_095_025', 'tomorrow') | sort(reverse=true))[24-int(states('input_select.varmepump_avstangd'))-1],
+                    (state_attr('sensor.nordpool_kwh_se3_sek_3_095_025', 'tomorrow') | sort(reverse=true))[24-int(states('input_select.varmepump_avstangd'))]) | 
+            round(3) }}
+          {% else %}
+          []
+          {% endif %}
+##### Nordpool attribues ###############
+
+- platform: template
+  sensors:
+    nordpool_diy_sensor_median_tomorrow:
+      friendly_name: "Nordpool median tomorrow"
+      unit_of_measurement: 'ÖRE/kWh'
+      value_template: "{{ state_attr('sensor.nordpool_diy_sensor', 'tomorrow') }}"
+
+
+##### Nordpool ####################
+- platform: nordpool
+
+  # Should the prices include vat? Default True
+  VAT: True
+
+  # What currency the api fetches the prices in
+  # this is only need if you want a sensor in a non local currency
+  currency: "SEK"
+  
+  # Option to show prices in cents (or the equivalent in local currency)
+  price_in_cents: true
+
+  # Helper so you can set your "low" price
+  # low_price = hour_price < average * low_price_cutoff
+  low_price_cutoff: 0.95
+
+  # What power regions your are interested in.
+  # Possible values: "DK1", "DK2", "FI", "LT", "LV", "Oslo", "Kr.sand", "Bergen", "Molde", "Tr.heim", "Tromsø", "SE1", "SE2", "SE3","SE4", "SYS", "EE"
+  region: "SE3"
+
+  # How many decimals to use in the display of the price
+  precision: 3
+
+  # What the price should be displayed in default
+  # Possible values: MWh, kWh and Wh
+  # default: kWh
+  price_type: kWh
+
+  # This option allows the usage of a template to add a tariff.
+  # now() always refers start of the hour of that price.
+  # this way we can calculate the correct costs add that to graphs etc.
+  # The price result of the additional_costs template expects this additional cost to be in kWh and not cents as a float
+  # default {{0.0|float}}
+  additional_costs: "{{0.0|float}}"  # |
+   #{%set d = {"operator_margin": 0.2425, 
+   #           "electricity_tariff": 0.45} %}
+   #          {{d.operator_margin+d.electricity_tariff | float }}
