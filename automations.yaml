@@ -1,0 +1,54 @@
+- id: e2b399b107b34ba1ab2fa492ade0762b
+  alias: VP-styring
+  description: Stäng av VP de dyraste timmarna
+  trigger:
+  - platform: time_pattern
+    minutes: '1'
+  - platform: state
+    entity_id:
+    - input_select.varmepump_avstangd
+    - input_number.pristroskel
+  condition: []
+  action:
+  - if:
+    - condition: or
+      conditions:
+      - condition: numeric_state
+        entity_id: sensor.nordpool_kwh_se3_sek_3_095_025
+        below: sensor.nordpool_diy_sensor
+      - condition: numeric_state
+        entity_id: sensor.nordpool_kwh_se3_sek_3_095_025
+        below: input_number.pristroskel
+    then:
+    - if:
+      - type: is_on
+        condition: device
+        device_id: e49fff82e901915ef1e7d2ca3fef24b4
+        entity_id: switch.shelly_shsw_1_34945470be74
+        domain: switch
+      then:
+      - type: turn_off
+        device_id: e49fff82e901915ef1e7d2ca3fef24b4
+        entity_id: switch.shelly_shsw_1_34945470be74
+        domain: switch
+      - service: notify.notify_family
+        data:
+          title: Elpriset under median
+          message: Startar VP då priset är lågt
+    else:
+    - if:
+      - condition: device
+        type: is_off
+        device_id: e49fff82e901915ef1e7d2ca3fef24b4
+        entity_id: switch.shelly_shsw_1_34945470be74
+        domain: switch
+      then:
+      - type: turn_on
+        device_id: e49fff82e901915ef1e7d2ca3fef24b4
+        entity_id: switch.shelly_shsw_1_34945470be74
+        domain: switch
+      - service: notify.notify_family
+        data:
+          title: Elpriset över median
+          message: Stänger av VP då priset är högt
+  mode: single
