@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "input_number",
+  "data": {
+    "items": [
+      {
+        "min": 0.0,
+        "max": 1000.0,
+        "name": "Priströskel",
+        "unit_of_measurement": "ÖRE/kWh",
+        "mode": "box",
+        "icon": "mdi:home-edit",
+        "step": 1.0,
+        "id": "pristroskel"
+      },
+      {
+        "min": 0.0,
+        "max": 99.0,
+        "mode": "box",
+        "unit_of_measurement": "C°",
+        "icon": "mdi:home-thermometer-outline",
+        "name": "Temperatur",
+        "step": 1.0,
+        "id": "temperatur"
+      }
+    ]
+  }
+}
