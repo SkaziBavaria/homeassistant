@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "minor_version": 2,
+  "key": "input_select",
+  "data": {
+    "items": [
+      {
+        "id": "varmepump_avstangd",
+        "name": "Värmepump igång",
+        "icon": "mdi:radiator",
+        "options": [
+          "2",
+          "4",
+          "6",
+          "8",
+          "10",
+          "12",
+          "14",
+          "16",
+          "18",
+          "20",
+          "22"
+        ]
+      }
+    ]
+  }
+}
