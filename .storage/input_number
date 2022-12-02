@@ -13,16 +13,6 @@
         "icon": "mdi:home-edit",
         "step": 1.0,
         "id": "pristroskel"
-      },
-      {
-        "min": 0.0,
-        "max": 99.0,
-        "mode": "box",
-        "unit_of_measurement": "C°",
-        "icon": "mdi:home-thermometer-outline",
-        "name": "Temperatur",
-        "step": 1.0,
-        "id": "temperatur"
       }
     ]
   }
